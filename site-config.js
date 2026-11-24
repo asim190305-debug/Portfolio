@@ -1,13 +1,12 @@
 /* =========================================================================
    PORTFOLIO CLIENT CONFIGURATION (site-config.js)
    Client: Muhammad Asim Shahzad (asim190305@gmail.com)
-   Replace SUPABASE_URL and SUPABASE_ANON_KEY once your Supabase project is ready.
    ========================================================================= */
 
 // 1. SUPABASE & ADMIN CREDENTIALS
-const SUPABASE_URL      = 'YOUR_SUPABASE_URL';      // e.g. https://xxxx.supabase.co
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Project Settings → API → anon public
-const ADMIN_EMAIL       = 'asim190305@gmail.com';   // Must match Supabase Auth user & setup.sql
+const SUPABASE_URL      = 'https://vmsjsqvigaatbjclytrp.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtc2pzcXZpZ2FhdGJqY2x5dHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1MjA3OTQsImV4cCI6MjExMTA5Njc5NH0.4b-mDTcgW8DhrfQjPewRfSxLCy91jYw3_ENwvlagWQs';
+const ADMIN_EMAIL       = 'asim190305@gmail.com';
 const SETTINGS_ID       = 'main';
 const STORAGE_BUCKET    = 'portfolio';
 const FEED_FUNCTION     = 'social-feed';
