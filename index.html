@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Muhammad Asim Shahzad | Physics & Mathematics Teacher</title>
-  <meta name="description" id="meta-desc" content="Portfolio of Muhammad Asim Shahzad — BS Physics graduate and experienced Physics & Mathematics teacher offering secondary instruction and private home tuition in Sargodha, Pakistan." />
+  <title>Muhammad Asim Shahzad | Physics &amp; Mathematics Teacher</title>
+  <meta name="description" id="meta-desc" content="Portfolio of Muhammad Asim Shahzad — BS Physics graduate and experienced Physics &amp; Mathematics teacher offering secondary instruction and private home tuition in Sargodha, Pakistan." />
   <meta name="theme-color" id="meta-theme" content="#090b10" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -685,7 +685,7 @@
 
 <script>
 /* =========================================================
-   SUPABASE CONFIG
+   SUPABASE CONFIG (Muhammad Asim Shahzad)
    ========================================================= */
 const SUPABASE_URL = 'https://vmsjsqvigaatbjclytrp.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtc2pzcXZpZ2FhdGJqY2x5dHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1MjA3OTQsImV4cCI6MjExMTA5Njc5NH0.4b-mDTcgW8DhrfQjPewRfSxLCy91jYw3_ENwvlagWQs';
@@ -928,7 +928,7 @@ const DEFAULTS = {
    HELPERS & CONTRAST ENGINE
    ========================================================= */
 const $ = s => document.querySelector(s);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' }[c]));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ico = c => { c = String(c || 'fa-solid fa-star').trim(); return c.includes(' ') ? c : 'fa-solid ' + c; };
 const safeUrl = u => {
   u = String(u || '').trim();
@@ -1212,7 +1212,7 @@ function render() {
             <div class="fact"><small>Qualification</small><strong>${esc(p.floatBadge || 'BS Physics')}</strong></div>
             <div class="fact"><small>Base</small><strong>${esc(p.location)}</strong></div>
             <div class="fact"><small>Current School</small><strong>${esc(CFG.experience?.[0]?.company || 'Sargodha')}</strong></div>
-            <div class="fact"><small>Availability</small><strong>On-Site & Online</strong></div>
+            <div class="fact"><small>Availability</small><strong>On-Site &amp; Online</strong></div>
           </div>
           ${tpl === 'dennis'
             ? `<button class="btn btn-round mag" onclick="openCV()"><span class="bfill"></span>View Resume</button>`
@@ -1252,7 +1252,7 @@ function render() {
       <div class="edu-grid">
         <div><div class="col-h"><i class="fa-solid fa-graduation-cap"></i> Academic Education</div>
           <div class="stack">${CFG.education.map((e, i) => `<div class="card edu-card rv" style="--d:${i * .05}s"><span class="chip">${esc(e.period)}</span><h4>${esc(e.degree)}</h4><div class="inst">${esc(e.institute)}</div>${e.desc ? `<p>${esc(e.desc)}</p>` : ''}</div>`).join('')}</div></div>
-        <div><div class="col-h"><i class="fa-solid fa-globe"></i> Languages & Proficiencies</div>
+        <div><div class="col-h"><i class="fa-solid fa-globe"></i> Languages &amp; Proficiencies</div>
           <div class="stack">${CFG.certifications.map((ct, i) => `<div class="card edu-card rv" style="--d:${i * .05}s"><span class="chip">${esc(ct.year)}</span><h4>${esc(ct.title)}</h4><div class="inst">${esc(ct.org)}</div>${ct.desc ? `<p>${esc(ct.desc)}</p>` : ''}</div>`).join('')}</div></div>
       </div>
     </div></section>`;
@@ -1477,7 +1477,7 @@ function buildCV() {
     <h2>Professional Summary</h2><p>${esc(p.cvSummary || p.intro)}</p>
     <h2>Professional Experience</h2>${CFG.experience.map(x => `<div class="cv-row"><span>${esc(x.role)} — ${esc(x.company)}</span><span>${esc(x.period)}</span></div><ul>${(x.points || []).map(pt => `<li>${esc(pt)}</li>`).join('')}</ul>`).join('')}
     <h2>Education</h2>${CFG.education.map(e => `<div class="cv-row" style="font-weight:400;margin-bottom:5px"><span><b>${esc(e.degree)}</b> — ${esc(e.institute)}</span><b>${esc(e.period)}</b></div>`).join('')}
-    <h2>Languages & Proficiencies</h2><ul>${CFG.certifications.map(c => `<li><b>${esc(c.title)}</b> — ${esc(c.org)} (${esc(c.year)})</li>`).join('')}</ul>
+    <h2>Languages &amp; Proficiencies</h2><ul>${CFG.certifications.map(c => `<li><b>${esc(c.title)}</b> — ${esc(c.org)} (${esc(c.year)})</li>`).join('')}</ul>
     <h2>Core Skills</h2><div class="cv-comp">${(CFG.competencies || []).map(c => `<div>• ${esc(c)}</div>`).join('')}</div>`;
 }
 function openCV() {
