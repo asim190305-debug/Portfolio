@@ -89,34 +89,9 @@
     .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--primary); }
 
     /* =========================================================================
-       FAIL-SAFE PRELOADER (Auto-hides via CSS even if JS is slow/blocked!)
+       SCROLL PROGRESS BAR (Preloader removed so no phone can ever get stuck)
        ========================================================================= */
     #progress { position: fixed; top: 0; left: 0; height: 2.5px; width: 0; z-index: 290; background: var(--primary); }
-    #preloader {
-      position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 900;
-      background: #141517; color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      transform: translateY(0);
-      transition: transform .65s var(--ease), opacity .4s ease, visibility .65s;
-      /* Pure CSS failsafe: NEVER traps any phone on "Hello" */
-      animation: plFailsafe .5s ease 1.6s forwards;
-    }
-    @keyframes plFailsafe {
-      to { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-100%); }
-    }
-    #preloader.hide {
-      transform: translateY(-112%);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-    .pl-curve {
-      position: absolute; left: -25%; right: -25%; bottom: -8vh; height: 16vh;
-      background: #141517; border-radius: 50%; transition: height .65s var(--ease);
-    }
-    #preloader.hide .pl-curve { height: 0; }
-    .pl-word { display: flex; align-items: center; gap: 14px; font-family: var(--font-h); font-size: 30px; font-weight: 600; letter-spacing: -.02em; }
-    .pl-word i { width: 9px; height: 9px; border-radius: 50%; background: var(--primary); display: block; }
 
     /* =========================================================================
        MAGNETIC BUTTONS WITH LIQUID FILL-WIPE
@@ -238,10 +213,12 @@
     .sec-head p { color: var(--muted); font-size: 14.5px; max-width: 480px; margin-top: 6px; }
     .sec-num { font-family: var(--mono); font-size: 13px; color: var(--muted); opacity: .65; }
 
-    /* Safe Scroll Reveal: visible by default if JS hasn't armed it yet */
+    /* Safe Scroll Reveal: always visible on mobile so no section can ever stay hidden */
     .rv { transition: opacity .5s var(--ease-out), transform .55s var(--ease-out); transition-delay: var(--d, 0s); }
-    body.anim-armed .rv:not(.in) { opacity: 0; transform: translateY(18px); }
-    body.anim-armed .rv.in, body.no-anim .rv { opacity: 1 !important; transform: none !important; }
+    @media(min-width: 961px) {
+      body.anim-armed .rv:not(.in) { opacity: 0; transform: translateY(18px); }
+      body.anim-armed .rv.in, body.no-anim .rv { opacity: 1 !important; transform: none !important; }
+    }
 
     .card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
@@ -682,10 +659,6 @@
 </head>
 <body data-template="dennis">
 
-  <div id="preloader" aria-hidden="true">
-    <div class="pl-word"><i></i><span id="pl-txt">Hello</span></div>
-    <div class="pl-curve"></div>
-  </div>
   <div id="progress" aria-hidden="true"></div>
 
   <header class="nav" id="nav"><div class="container" id="nav-c"></div></header>
@@ -725,13 +698,6 @@ var SUPABASE_URL = 'https://vmsjsqvigaatbjclytrp.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtc2pzcXZpZ2FhdGJqY2x5dHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1MjA3OTQsImV4cCI6MjExMTA5Njc5NH0.4b-mDTcgW8DhrfQjPewRfSxLCy91jYw3_ENwvlagWQs';
 var SETTINGS_ID = 'main';
 var CACHE_KEY = 'portfolio_site_cfg';
-
-/* Immediate safety net: hide preloader after max 1.4s no matter what */
-function hidePreloader() {
-  var pl = document.getElementById('preloader');
-  if (pl) pl.classList.add('hide');
-}
-setTimeout(hidePreloader, 1400);
 
 /* =========================================================
    10 COMPLETE WEBSITE TEMPLATES & 15 EXECUTIVE THEMES
@@ -920,6 +886,22 @@ var DEFAULTS = {
    UNIVERSAL HELPERS (100% Compatible with All Mobile Browsers)
    ========================================================= */
 function $(s) { return document.querySelector(s); }
+function each(list, fn) {
+  if (!list) return;
+  for (var i = 0; i < list.length; i++) fn(list[i], i);
+}
+function extend() {
+  var out = {};
+  for (var i = 0; i < arguments.length; i++) {
+    var src = arguments[i];
+    if (src && typeof src === 'object') {
+      for (var k in src) {
+        if (Object.prototype.hasOwnProperty.call(src, k)) out[k] = src[k];
+      }
+    }
+  }
+  return out;
+}
 function esc(s) {
   return String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, function(c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -953,7 +935,7 @@ function merge(base, over) {
   if (over === undefined || over === null) return base;
   if (Array.isArray(over)) return over;
   if (typeof over === 'object' && base && typeof base === 'object' && !Array.isArray(base)) {
-    var out = Object.assign({}, base);
+    var out = extend(base);
     for (var k in over) {
       if (Object.prototype.hasOwnProperty.call(over, k)) out[k] = merge(base[k], over[k]);
     }
@@ -972,9 +954,9 @@ function normalizeConfig(raw, isPreview) {
     if (!isPreview && oldGirly.indexOf(String(out.theme.primary || '').toLowerCase()) !== -1) {
       var tpl = TEMPLATE_LIST.indexOf(out.theme.template) !== -1 ? out.theme.template : 'dennis';
       var defPreset = TEMPLATE_DEFAULT_THEME[tpl] || 'obsidian-cobalt';
-      out.theme = Object.assign({}, out.theme, THEME_PRESETS[defPreset], { preset: defPreset, template: tpl });
+      out.theme = extend(out.theme, THEME_PRESETS[defPreset], { preset: defPreset, template: tpl });
     } else if (out.theme.preset && THEME_PRESETS[out.theme.preset] && !out.theme.customColors) {
-      out.theme = Object.assign({}, out.theme, THEME_PRESETS[out.theme.preset]);
+      out.theme = extend(out.theme, THEME_PRESETS[out.theme.preset]);
     }
   }
   return out;
@@ -1012,7 +994,7 @@ function applyTheme() {
 
   var palette = t;
   if (tpl === 'editorial-light' && !t.customColors && hexLum(t.bg) < 150 && t.preset === 'obsidian-cobalt') {
-    palette = Object.assign({}, t, THEME_PRESETS['alabaster-ink']);
+    palette = extend(t, THEME_PRESETS['alabaster-ink']);
   }
 
   ['primary', 'secondary', 'bg', 'bg2', 'card', 'text', 'muted'].forEach(function(k) {
@@ -1390,9 +1372,9 @@ function render() {
 
   var sw = $('#skills');
   if (sw) sw.addEventListener('click', function(e) {
-    var b = e.target.closest('.tab'); if (!b) return;
+    var b = e.target.closest ? e.target.closest('.tab') : null; if (!b) return;
     skillFilter = b.getAttribute('data-cat');
-    sw.querySelectorAll('.tab').forEach(function(t) { t.classList.toggle('active', t === b); });
+    each(sw.querySelectorAll('.tab'), function(t) { t.classList.toggle('active', t === b); });
     $('#skills-wrap').innerHTML = renderSkillsHTML(tpl);
     observeIn($('#skills-wrap'));
   });
@@ -1461,16 +1443,16 @@ function observeIn(root) {
   if (io && root === document) { io.disconnect(); io = null; }
   var els = root.querySelectorAll('.rv:not(.in),[data-w]:not(.in),[data-ring]:not(.in),[data-count]:not(.in)');
   if (!CFG.animations || !CFG.animations.enabled || !('IntersectionObserver' in window)) {
-    els.forEach(revealEl);
+    each(els, revealEl);
     return;
   }
   document.body.classList.add('anim-armed');
   io = new IntersectionObserver(function(entries) {
-    entries.forEach(function(en) {
+    each(entries, function(en) {
       if (en.isIntersecting) { revealEl(en.target); io.unobserve(en.target); }
     });
   }, { threshold: 0.05, rootMargin: '0px 0px 40px 0px' });
-  els.forEach(function(e) {
+  each(els, function(e) {
     var rect = e.getBoundingClientRect();
     if (rect.top < window.innerHeight + 60) revealEl(e);
     else io.observe(e);
@@ -1498,7 +1480,7 @@ function startTyper() {
 
 function bindMagnetic() {
   if (!CFG.animations || !CFG.animations.enabled || !window.matchMedia || !window.matchMedia('(pointer:fine)').matches) return;
-  document.querySelectorAll('.mag').forEach(function(b) {
+  each(document.querySelectorAll('.mag'), function(b) {
     b.onpointermove = function(e) {
       var r = b.getBoundingClientRect();
       b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * 0.16) + 'px,' + ((e.clientY - r.top - r.height / 2) * 0.2) + 'px)';
@@ -1555,10 +1537,10 @@ function onScroll() {
   var topBtn = $('#toTop'); if (topBtn) topBtn.classList.toggle('show', y > 520);
 
   var cur = 'home';
-  document.querySelectorAll('#app-root > section[id]').forEach(function(s) {
+  each(document.querySelectorAll('#app-root > section[id]'), function(s) {
     if (s.getBoundingClientRect().top <= 160) cur = s.id;
   });
-  document.querySelectorAll('#nav-links a, #drawer-links a').forEach(function(a) {
+  each(document.querySelectorAll('#nav-links a, #drawer-links a'), function(a) {
     a.classList.toggle('active', a.getAttribute('data-sec') === cur);
   });
 }
@@ -1641,18 +1623,6 @@ try {
   render();
 } catch (err) {
   console.error('Render error:', err);
-} finally {
-  if (!CFG.animations || !CFG.animations.preloader || !CFG.animations.enabled || IS_PREVIEW) {
-    hidePreloader();
-  } else {
-    var words = ['Hello', 'Welcome'], wi = 0;
-    var iv = setInterval(function() {
-      wi++;
-      var txt = $('#pl-txt');
-      if (wi < words.length && txt) txt.textContent = words[wi];
-      else { clearInterval(iv); hidePreloader(); }
-    }, 240);
-  }
 }
 
 function initSupabaseSync() {
