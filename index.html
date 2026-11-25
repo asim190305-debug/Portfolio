@@ -89,9 +89,33 @@
     .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--primary); }
 
     /* =========================================================================
-       SCROLL PROGRESS BAR (Preloader removed so no phone can ever get stuck)
+       HELLO → WELCOME CURVED CURTAIN PRELOADER (All 10 Templates, Samsung-Safe)
        ========================================================================= */
     #progress { position: fixed; top: 0; left: 0; height: 2.5px; width: 0; z-index: 290; background: var(--primary); }
+    #preloader {
+      position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 900;
+      background: #141517; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      transform: translateY(0);
+      transition: transform .68s var(--ease), opacity .35s ease, visibility .68s;
+      animation: plFailsafe .5s ease 1.8s forwards;
+    }
+    @keyframes plFailsafe {
+      to { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-110%); }
+    }
+    #preloader.hide {
+      transform: translateY(-112%);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .pl-curve {
+      position: absolute; left: -25%; right: -25%; bottom: -8vh; height: 16vh;
+      background: #141517; border-radius: 50%; transition: height .68s var(--ease);
+    }
+    #preloader.hide .pl-curve { height: 0; }
+    .pl-word { display: flex; align-items: center; gap: 14px; font-family: var(--font-h); font-size: 32px; font-weight: 600; letter-spacing: -.02em; }
+    .pl-word i { width: 10px; height: 10px; border-radius: 50%; background: var(--primary); display: block; }
 
     /* =========================================================================
        MAGNETIC BUTTONS WITH LIQUID FILL-WIPE
@@ -659,6 +683,10 @@
 </head>
 <body data-template="dennis">
 
+  <div id="preloader" aria-hidden="true">
+    <div class="pl-word"><i></i><span id="pl-txt">Hello</span></div>
+    <div class="pl-curve"></div>
+  </div>
   <div id="progress" aria-hidden="true"></div>
 
   <header class="nav" id="nav"><div class="container" id="nav-c"></div></header>
@@ -1617,12 +1645,32 @@ function sendWhatsApp() {
 }
 
 /* =========================================================
-   INSTANT BOOT + ASYNC SUPABASE SYNC (Zero Blocking!)
+   INSTANT BOOT + HELLO/WELCOME CURTAIN + ASYNC SUPABASE SYNC
    ========================================================= */
+function hidePreloader() {
+  var pl = document.getElementById('preloader');
+  if (!pl || pl.classList.contains('hide')) return;
+  pl.classList.add('hide');
+  setTimeout(function() { if (pl) pl.style.display = 'none'; }, 750);
+}
+setTimeout(hidePreloader, 1400);
+
 try {
   render();
 } catch (err) {
   console.error('Render error:', err);
+} finally {
+  if (!CFG.animations || !CFG.animations.preloader || !CFG.animations.enabled || IS_PREVIEW) {
+    hidePreloader();
+  } else {
+    var words = ['Hello', 'Welcome'], wi = 0;
+    var iv = setInterval(function() {
+      wi++;
+      var txt = document.getElementById('pl-txt');
+      if (wi < words.length && txt) txt.textContent = words[wi];
+      else { clearInterval(iv); hidePreloader(); }
+    }, 320);
+  }
 }
 
 function initSupabaseSync() {
